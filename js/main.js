@@ -1,7 +1,10 @@
 addEventListener('load', function() {
+
     document.getElementById('play').addEventListener('click', 
     function(){
-        alert("Comença la partida");
+    	let alies = prompt("Introdueix el teu alies:");
+    	console.log("Àlies del jugador:", alies);
+    	alert("Comença la partida, " + alies + "!");
     });
 
     document.getElementById('options').addEventListener('click', 
