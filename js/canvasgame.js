@@ -9,6 +9,7 @@ const e_click = {click: false, x: -1, y: -1}
 let key = null;
 const c_w = 96;
 const c_h = 128;
+let idxSel = -1;
 
 if (canvas){
     game.attr("width", 800);
@@ -63,21 +64,52 @@ function loadCardResource(src){
 
 function draw(){
     canvas.reset();
-    cards.forEach((card) => {
+    cards.forEach((card, indx) => {
         let res = resources[card.texture];
-        if (res.ready)
-            canvas.drawImage(res.image, card.position.xMin, card.position.yMin, c_w, c_h);
+        if (res.ready){
+            if (idxSel === indx)
+                canvas.drawImage(res.image, card.position.xMin, 
+                                card.position.yMin, c_w + 4, c_h + 4);
+            else
+                canvas.drawImage(res.image, card.position.xMin, 
+                                    card.position.yMin, c_w, c_h);
+        }
     });
 }
 
 function checkInput(){
     if (e_click.click){
-        e_click.click = false;
         cards.some((card, indx)=>{
             let click = card.onClick(e_click.x, e_click.y);
             if (click) clickCard(indx);
             return click;
         });
     }
+    if (key){
+        let prevIndx = idxSel;
+        switch(key){
+            case "Escape":
+                saveGame();
+                break;
+            case "ArrowRight":
+                idxSel = (idxSel + 1)%cards.length;
+                break;
+            case "ArrowLeft":
+                idxSel = (idxSel - 1 + cards.length)%cards.length;
+                break;
+            case "Enter":
+                if (idxSel >= 0) clickCard(idxSel);
+                break;
+            default:
+                console.warn("Tecla "+key+" no reconeguda.");
+        }
+        if (idxSel != prevIndx){
+            if (prevIndx >= 0) {
+                cards[prevIndx].position.xMin += 2;
+            }
+            cards[idxSel].position.xMin -= 2;
+        }
+    }
+    e_click.click = key = false;
 }
 

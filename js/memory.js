@@ -58,7 +58,7 @@ var game = {
         });
     },
     click: function(indx){
-        if (!this.states[indx] || this.ready < this.items.length) return;
+        if (this.states[indx] !== StateCard.ENABLE || this.ready < this.items.length) return;
         this.goFront(indx);
         if (this.lastCard === null) this.lastCard = indx; // Primera carta clicada
         else{ // Teníem carta prèvia
