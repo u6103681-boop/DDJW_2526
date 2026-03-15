@@ -1,4 +1,4 @@
-load', function() {
+$(document).ready(function() {
 
     $("#play").click(function(){
         window.location.assign("./html/game.html");
