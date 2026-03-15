@@ -39,10 +39,25 @@ button:active{
 	color:cornsilk;
 }
 
-#game{
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
-	flex-flow: row wrap;
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* centra vertical */
+    align-items: center;      /* centra horizontal */
+    height: 100vh;
+    margin: 0;
+}
 
+#game {
+    display: flex;
+    justify-content: center;  /* centra horizontalmente las cartas */
+    align-items: center;      /* centra verticalmente dentro del contenedor */
+    flex-wrap: wrap;          /* permite varias filas */
+    width: 80%;               /* opcional: ancho del contenedor */
+    min-height: 60vh;         /* altura mínima para centrar vertical */
+    gap: 10px;                /* espacio entre cartas */
+}
+
+#game img {
+    cursor: pointer;
 }
