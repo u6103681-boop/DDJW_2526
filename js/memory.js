@@ -47,8 +47,10 @@ export function clickCard(indx){
             }
         }
         else {
+	    setTimeout(function(){
             goBack(indx);
             goBack(game.lastCard);
+	    }, 1000);
             game.score -= 25;
             if (game.score <= 0){
                 alert ("Has perdut");
@@ -57,7 +59,7 @@ export function clickCard(indx){
         }
         game.lastCard = null;
     }
-}
+
 
 function goBack(idx){
     setValue(idx, back);
