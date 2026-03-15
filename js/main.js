@@ -1,21 +1,21 @@
-addEventListener('load', function() {
+load', function() {
 
-    document.getElementById('play').addEventListener('click', 
+    $("#play").click(function(){
     function(){
         window.location.assign("./html/game.html");
     });
 
-    document.getElementById('options').addEventListener('click', 
+    $("#options").click(function(){
     function(){
         console.error("Opció no implementada");
     });
 
-    document.getElementById('saves').addEventListener('click', 
+    $("#saves").click(function(){
     function(){
         console.error("Opció no implementada");
     });
 
-    document.getElementById('exit').addEventListener('click', 
+    $("#exit").click(function(){
     function(){
         console.warn("No es pot sortir!");
     });

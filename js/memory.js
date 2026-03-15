@@ -1,4 +1,4 @@
-import { jQuery } from '../library/jquery-4.0.0.slim.module.min.js';
+jQuery } from '../library/jquery-4.0.0.slim.module.min.js';
 import {setValue, clickOn, clickOff} from './game.js';
 const resources = ['../resources/cb.png', '../resources/co.png',
                 '../resources/sb.png', '../resources/so.png',
