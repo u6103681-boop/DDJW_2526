@@ -3,30 +3,30 @@ import {$} from "../library/jquery-4.0.0.slim.module.min.js";
 var options = function(){
     const default_options = {
         pairs: 2,
+        groupSize: 2,
         difficulty: 'normal'
     } 
 
     var pairs = $('#pairs');
+    var groupSize = $('#groupSize');
     var difficulty = $('#dif');
     
     var savedOptions = localStorage.options && JSON.parse(localStorage.options);
     var options = Object.create(default_options);
 
-    if (savedOptions && savedOptions.pairs)
-        options.pairs = savedOptions.pairs;
-    if (savedOptions && savedOptions.difficulty)
-        options.difficulty = savedOptions.difficulty;
+    if (savedOptions){
+        if (savedOptions.pairs) options.pairs = savedOptions.pairs;
+        if (savedOptions.groupSize) options.groupSize = savedOptions.groupSize;
+        if (savedOptions.difficulty) options.difficulty = savedOptions.difficulty;
+    }
 
     pairs.val(options.pairs);
+    groupSize.val(options.groupSize);
     difficulty.val(options.difficulty);
 
-    pairs.on('change', function (){
-        options.pairs = pairs.val();
-    });
-
-    difficulty.on('change', function (){
-        options.difficulty = difficulty.val();
-    });
+    pairs.on('change', () => options.pairs = pairs.val());
+    groupSize.on('change', () => options.groupSize = groupSize.val());
+    difficulty.on('change', () => options.difficulty = difficulty.val());
 
     return {
         applyChanges: function(){
@@ -34,8 +34,11 @@ var options = function(){
         },
         defaultValues: function(){
             options.pairs = default_options.pairs;
+            options.groupSize = default_options.groupSize;
             options.difficulty = default_options.difficulty;
+            
             pairs.val(options.pairs);
+            groupSize.val(options.groupSize);
             difficulty.val(options.difficulty);
         }
     }
