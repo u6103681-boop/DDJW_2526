@@ -71,7 +71,15 @@ function start(){
         e_click.y = e.pageY - this.offsetTop;
     });
     $(document).keydown(e => key = e.key);
+    let saveBtn = document.getElementById('save');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            saveGame();
+        });
+    }
+
     startGame();
+}
 }
 
 function update(){
