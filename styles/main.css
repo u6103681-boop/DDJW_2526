@@ -23,8 +23,9 @@ body{
 }
 
 button{
-	color:beige;
+	color:azure;
 	border-radius: 15px;
+	background-color: #527752;
 }
 
 button:hover{
