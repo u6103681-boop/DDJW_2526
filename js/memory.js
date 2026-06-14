@@ -10,40 +10,50 @@ const StateCard = Object.freeze({
 });
 
 var game = {
-    items:     [],
-    states:    [],
-    setValue:  null,
-    ready:     0,
-    lastCards: [],
-    waiting:   false,
-    score:     200,
-    pairs:     2,
-    groupSize: 2,
+    items:        [],
+    states:       [],
+    setValue:     null,
+    ready:        0,
+    lastCards:    [],
+    waiting:      false,
+    score:        200,
+    initialScore: 200,
+    pairs:        2,
+    groupSize:    2,
+    penalty:      25,
+    mode:         1,
 
     goBack: function(idx){
-        this.setValue && this.setValue[idx](back);
+        this.setValue && this.setValue[idx] && this.setValue[idx](back);
         this.states[idx] = StateCard.ENABLE;
     },
     goFront: function(idx){
-        this.setValue && this.setValue[idx](this.items[idx]);
+        this.setValue && this.setValue[idx] && this.setValue[idx](this.items[idx]);
         this.states[idx] = StateCard.DISABLE;
     },
 
     select: function(){
         if (sessionStorage.load){
-            let toLoad = JSON.parse(sessionStorage.load);
-            this.items     = toLoad.items;
-            this.states    = toLoad.states;
-            this.lastCards = toLoad.lastCards || [];
-            this.score     = toLoad.score;
-            this.pairs     = toLoad.pairs;
-            this.groupSize = toLoad.groupSize || 2;
+            let toLoad        = JSON.parse(sessionStorage.load);
+            this.items        = toLoad.items;
+            this.states       = toLoad.states;
+            this.lastCards    = toLoad.lastCards    || [];
+            this.score        = toLoad.score;
+            this.initialScore = toLoad.initialScore || 200;
+            this.pairs        = toLoad.pairs;
+            this.groupSize    = toLoad.groupSize    || 2;
+            this.penalty      = toLoad.penalty      || 25;
+            this.mode         = toLoad.mode         || 1;
         }
         else{
-            if (sessionStorage.groupSize) this.groupSize = parseInt(sessionStorage.groupSize);
-            if (sessionStorage.numPairs)  this.pairs     = parseInt(sessionStorage.numPairs);
+            if (sessionStorage.groupSize)    this.groupSize    = parseInt(sessionStorage.groupSize);
+            if (sessionStorage.numPairs)     this.pairs        = parseInt(sessionStorage.numPairs);
+            if (sessionStorage.penalty)      this.penalty      = parseInt(sessionStorage.penalty);
+            if (sessionStorage.initialScore) this.initialScore = parseInt(sessionStorage.initialScore);
+            if (sessionStorage.mode)         this.mode         = parseInt(sessionStorage.mode);
 
             this.pairs = Math.min(this.pairs, resources.length);
+            this.score = this.initialScore;
 
             this.items = resources.slice();
             shuffe(this.items);
@@ -58,16 +68,15 @@ var game = {
         }
     },
 
+  
     start: function(){
         this.items.forEach((_, indx) => {
-            if (this.states[indx] === StateCard.DISABLE ||
-                this.states[indx] === StateCard.DONE){
+            if (this.states[indx] === StateCard.DONE){
+                this.setValue && this.setValue[indx] && this.setValue[indx](this.items[indx]);
                 this.ready++;
             } else {
-                setTimeout(() => {
-                    this.ready++;
-                    this.goBack(indx);
-                }, 1000 + 100 * indx);
+                this.goBack(indx);
+                this.ready++;
             }
         });
     },
@@ -76,7 +85,8 @@ var game = {
         if (this.states[indx] !== StateCard.ENABLE) return;
         if (this.ready < this.items.length)          return;
         if (this.waiting)                            return;
-        if (this.lastCards.includes(indx))           return; 
+        if (this.lastCards.includes(indx))           return;
+
         this.goFront(indx);
         this.lastCards.push(indx);
 
@@ -92,7 +102,7 @@ var game = {
                     window.location.assign("../");
                 }
             } else {
-                this.score -= 25;
+                this.score -= this.penalty;
                 this.waiting = true;
                 let toFlip = [...this.lastCards];
                 setTimeout(() => {
@@ -113,16 +123,18 @@ var game = {
         this.lastCards = [];
 
         let to_save = JSON.stringify({
-            items:     this.items,
-            states:    this.states,
-            lastCards: this.lastCards,
-            score:     this.score,
-            pairs:     this.pairs,
-            groupSize: this.groupSize
+            items:        this.items,
+            states:       this.states,
+            lastCards:    this.lastCards,
+            score:        this.score,
+            initialScore: this.initialScore,
+            pairs:        this.pairs,
+            groupSize:    this.groupSize,
+            penalty:      this.penalty,
+            mode:         this.mode
         });
 
         localStorage.save = to_save;
-
         fetch('../php/save.php', {
             method:  "POST",
             body:    to_save,
@@ -149,3 +161,8 @@ export function initCard(callback){
     game.setValue.push(callback);
 }
 export function saveGame(){ game.save(); }
+
+export function getScore(){     return game.score;     }
+export function getPairs(){     return game.pairs;     }
+export function getMode(){      return game.mode;      }
+export function getGroupSize(){ return game.groupSize; }
