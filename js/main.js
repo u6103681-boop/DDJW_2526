@@ -1,7 +1,6 @@
-import {$} from "../library/jquery-4.0.0.slim.module.min.js";
-
 addEventListener('load', function() {
     document.getElementById('play').addEventListener('click', function(){
+        // Inicializamos la partida leyendo las opciones
         sessionStorage.groupSize = localStorage.options ? JSON.parse(localStorage.options).groupSize : 2;
         sessionStorage.numPairs  = localStorage.options ? JSON.parse(localStorage.options).pairs : 2;
         sessionStorage.removeItem('load');
@@ -13,6 +12,7 @@ addEventListener('load', function() {
     });
 
     document.getElementById('saves').addEventListener('click', function(){
+        // Carga estrictamente de LocalStorage
         let to_load = localStorage.save;
         
         if (!to_load) {
