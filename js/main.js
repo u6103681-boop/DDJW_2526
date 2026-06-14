@@ -2,7 +2,7 @@ addEventListener('load', function() {
     document.getElementById('play').addEventListener('click', 
     function(){
         sessionStorage.groupSize = 2;
-        sessionStorage.numPairs  = 4;
+        sessionStorage.numPairs  = 2;
         sessionStorage.removeItem('load');
         window.location.assign("./html/game.html");
     });
