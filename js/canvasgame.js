@@ -3,8 +3,6 @@ import {
     clickCard, gameItems, selectCards, startGame, initCard, saveGame,
     getScore, getPairs, getMode, getGroupSize, back as BACK_SRC
 } from "./memory.js";
-
-const BACK_SRC = '../resources/back.svg';
 const CANVAS_W = 800;
 const CANVAS_H = 600;
 const HUD_H    = 50;
