@@ -118,7 +118,7 @@ var game = {
         }
     },
 
-    save: function(){
+   save: function(){
         this.lastCards.forEach(i => this.goBack(i));
         this.lastCards = [];
 
@@ -135,11 +135,9 @@ var game = {
         });
 
         localStorage.save = to_save;
-        fetch('../php/save.php', {
-            method:  "POST",
-            body:    to_save,
-            headers: {"Content-type": "application/json; charset=UTF-8"}
-        }).catch(err => console.error("Error guardant al servidor:", err));
+        alert("Partida guardada correctament!");
+        window.location.assign("../");
+    }
 
         window.location.assign("../");
     }
