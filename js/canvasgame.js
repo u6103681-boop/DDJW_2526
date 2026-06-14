@@ -1,7 +1,7 @@
 import {$} from "../library/jquery-4.0.0.slim.module.min.js";
 import {
     clickCard, gameItems, selectCards, startGame, initCard, saveGame,
-    getScore, getPairs, getMode, getGroupSize
+    getScore, getPairs, getMode, getGroupSize, back as BACK_SRC
 } from "./memory.js";
 
 const BACK_SRC = '../resources/back.svg';
