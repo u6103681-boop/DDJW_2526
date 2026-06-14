@@ -22,10 +22,15 @@ body{
 	background-color: darkslategrey;
 }
 
-button{
+#boto{
 	color:azure;
 	border-radius: 15px;
 	background-color: #527752;
+}
+
+button{
+	color:azure;
+	border-radius: 15px;
 }
 
 button:hover{
