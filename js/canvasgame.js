@@ -78,7 +78,6 @@ function start(){
 
     startGame();
 }
-}
 
 function update(){
     checkInput();
