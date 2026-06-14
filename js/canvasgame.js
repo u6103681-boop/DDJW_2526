@@ -1,5 +1,16 @@
 import {$} from "../library/jquery-4.0.0.slim.module.min.js";
-import {clickCard, gameItems, selectCards, startGame, initCard, saveGame} from "./memory.js";
+import {
+    clickCard, gameItems, selectCards, startGame, initCard, saveGame,
+    getScore, getPairs, getMode, getGroupSize
+} from "./memory.js";
+
+const BACK_SRC = '../resources/back.svg';
+const CANVAS_W = 800;
+const CANVAS_H = 600;
+const HUD_H    = 50;
+const c_w      = 90;
+const c_h      = 120;
+const gap      = 10;
 
 let gameEl    = $('#game');
 let ctx       = gameEl[0].getContext('2d');
@@ -7,35 +18,37 @@ let resources = {};
 let cards     = [];
 const e_click = {click: false, x: -1, y: -1};
 let key       = null;
-const c_w = 96;
-const c_h = 128;
-const gap = 10;
-let idxSel = -1;
+let idxSel    = -1;
+
 if (ctx){
-    gameEl.attr("width",  800);
-    gameEl.attr("height", 600);
+    gameEl.attr("width",  CANVAS_W);
+    gameEl.attr("height", CANVAS_H);
     start();
     update();
 }
 
 function getGridLayout(numCards){
     let cols = Math.ceil(Math.sqrt(numCards * 1.3));
-    cols = Math.min(cols, Math.floor(800 / (c_w + gap)));
+    cols = Math.min(cols, Math.floor(CANVAS_W / (c_w + gap)));
     cols = Math.max(cols, 1);
     return { cols, rows: Math.ceil(numCards / cols) };
 }
 
 function start(){
     selectCards();
-    cards = gameItems.map(c => ({texture: c}));
-    loadCardResource("../resources/back.png");
+    
+    cards = gameItems.map(() => ({texture: BACK_SRC}));
+    loadCardResource(BACK_SRC);
+    
+    gameItems.forEach(src => loadCardResource(src));
 
     let {cols, rows} = getGridLayout(cards.length);
-    let startX = Math.floor((800 - cols * (c_w + gap) + gap) / 2);
-    let startY = Math.floor((600 - rows * (c_h + gap) + gap) / 2);
+    let gridW  = cols * c_w + (cols - 1) * gap;
+    let gridH  = rows * c_h + (rows - 1) * gap;
+    let startX = Math.floor((CANVAS_W - gridW) / 2);
+    let startY = HUD_H + Math.floor((CANVAS_H - HUD_H - gridH) / 2);
 
     cards.forEach((card, indx) => {
-        loadCardResource(card.texture);
         initCard(val => card.texture = val);
 
         let col = indx % cols;
@@ -70,15 +83,41 @@ function update(){
 function loadCardResource(src){
     if (!resources[src]){
         let res = {image: null, ready: false};
-        res.image = new Image();
+        res.image     = new Image();
         res.image.src = src;
         res.image.onload = () => res.ready = true;
         resources[src] = res;
     }
 }
 
+function drawHUD(){
+    let score     = getScore();
+    let pairs     = getPairs();
+    let mode      = getMode();
+    let groupSize = getGroupSize();
+    let gsLabel   = ['', '', 'Parelles', 'Trios', 'Quartets'][groupSize] || `×${groupSize}`;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillRect(0, 0, CANVAS_W, HUD_H);
+
+    ctx.fillStyle    = '#ffffff';
+    ctx.font         = 'bold 18px Arial';
+    ctx.textBaseline = 'middle';
+
+    ctx.textAlign = 'left';
+    ctx.fillText(`Mode ${mode}  ·  ${gsLabel}  ·  Grups restants: ${pairs}`, 14, HUD_H / 2);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = score > 100 ? '#4af' : '#f84';
+    ctx.fillText(`Puntuació: ${score}`, CANVAS_W - 14, HUD_H / 2);
+
+    ctx.restore();
+}
+
 function draw(){
     ctx.reset();
+
     cards.forEach((card, indx) => {
         let res = resources[card.texture];
         if (!res || !res.ready) return;
@@ -93,18 +132,18 @@ function draw(){
         }
         ctx.drawImage(res.image, xMin, yMin, c_w, c_h);
     });
+
+    drawHUD();
 }
 
 function moveSelection(delta){
     if (idxSel < 0) { idxSel = 0; return; }
     idxSel = ((idxSel + delta) % cards.length + cards.length) % cards.length;
 }
-
 function moveSelectionGrid(delta){
     let {cols} = getGridLayout(cards.length);
     if (idxSel < 0) { idxSel = 0; return; }
-    let next = idxSel + delta * cols;
-    idxSel = Math.max(0, Math.min(next, cards.length - 1));
+    idxSel = Math.max(0, Math.min(idxSel + delta * cols, cards.length - 1));
 }
 
 function checkInput(){
@@ -117,11 +156,11 @@ function checkInput(){
     }
     if (key){
         switch(key){
-            case "Escape":      saveGame();            break;
-            case "ArrowRight":  moveSelection(1);      break;
-            case "ArrowLeft":   moveSelection(-1);     break;
-            case "ArrowDown":   moveSelectionGrid(1);  break;
-            case "ArrowUp":     moveSelectionGrid(-1); break;
+            case "Escape":     saveGame();            break;
+            case "ArrowRight": moveSelection(1);      break;
+            case "ArrowLeft":  moveSelection(-1);     break;
+            case "ArrowDown":  moveSelectionGrid(1);  break;
+            case "ArrowUp":    moveSelectionGrid(-1); break;
             case "Enter":
                 if (idxSel >= 0) clickCard(idxSel);
                 break;
