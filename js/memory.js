@@ -1,46 +1,45 @@
-
-
-const svg_co = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+const svg_co = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
   <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
   <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
   <circle cx="48" cy="64" r="28" fill="#e6921d" stroke="#9c6312" stroke-width="2.5"/>
 </svg>`;
 
-const svg_cb = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+const svg_cb = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
   <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
   <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
   <circle cx="48" cy="64" r="28" fill="#00b2fe" stroke="#005b82" stroke-width="2.5"/>
 </svg>`;
 
-const svg_to = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+const svg_to = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
   <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
   <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
   <polygon points="48,30 77.44,81 18.56,81" fill="#e6921d" stroke="#9c6312" stroke-width="2.5" stroke-linejoin="round"/>
 </svg>`;
 
-const svg_tb = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+const svg_tb = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
   <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
   <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
   <polygon points="48,30 77.44,81 18.56,81" fill="#00b2fe" stroke="#005b82" stroke-width="2.5" stroke-linejoin="round"/>
 </svg>`;
 
-const svg_so = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+const svg_so = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
   <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
   <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
   <rect x="24" y="40" width="48" height="48" fill="#e6921d" stroke="#9c6312" stroke-width="2.5"/>
 </svg>`;
 
-const svg_sb = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+const svg_sb = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
   <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
   <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
   <rect x="24" y="40" width="48" height="48" fill="#00b2fe" stroke="#005b82" stroke-width="2.5"/>
 </svg>`;
 
-const svg_back = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+const svg_back = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
   <rect width="96" height="128" rx="8" fill="#37474F" stroke="#ebe8cd" stroke-width="2"/>
   <circle cx="48" cy="64" r="20" fill="none" stroke="#ebe8cd" stroke-width="4"/>
 </svg>`;
 
+// Usa esta función (la normal con encodeURIComponent suele dar menos problemas que btoa en algunos navegadores)
 function svgToDataURL(svgStr) {
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
 }
@@ -52,8 +51,6 @@ const resources = [
     svgToDataURL(svg_sb), svgToDataURL(svg_so),
     svgToDataURL(svg_tb), svgToDataURL(svg_to)
 ];
-
-
 
 const StateCard = Object.freeze({
   DISABLE: 0,
