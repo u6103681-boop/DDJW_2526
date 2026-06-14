@@ -1,7 +1,59 @@
-const resources = ['../resources/cb.svg', '../resources/co.svg',
-                   '../resources/sb.svg', '../resources/so.svg',
-                   '../resources/tb.svg', '../resources/to.svg'];
-const back = '../resources/back.svg';
+
+
+const svg_co = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <circle cx="48" cy="64" r="28" fill="#e6921d" stroke="#9c6312" stroke-width="2.5"/>
+</svg>`;
+
+const svg_cb = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <circle cx="48" cy="64" r="28" fill="#00b2fe" stroke="#005b82" stroke-width="2.5"/>
+</svg>`;
+
+const svg_to = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <polygon points="48,30 77.44,81 18.56,81" fill="#e6921d" stroke="#9c6312" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>`;
+
+const svg_tb = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <polygon points="48,30 77.44,81 18.56,81" fill="#00b2fe" stroke="#005b82" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>`;
+
+const svg_so = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <rect x="24" y="40" width="48" height="48" fill="#e6921d" stroke="#9c6312" stroke-width="2.5"/>
+</svg>`;
+
+const svg_sb = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <rect x="24" y="40" width="48" height="48" fill="#00b2fe" stroke="#005b82" stroke-width="2.5"/>
+</svg>`;
+
+const svg_back = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#37474F" stroke="#ebe8cd" stroke-width="2"/>
+  <circle cx="48" cy="64" r="20" fill="none" stroke="#ebe8cd" stroke-width="4"/>
+</svg>`;
+
+function svgToDataURL(svgStr) {
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+}
+
+export const back = svgToDataURL(svg_back);
+
+const resources = [
+    svgToDataURL(svg_cb), svgToDataURL(svg_co),
+    svgToDataURL(svg_sb), svgToDataURL(svg_so),
+    svgToDataURL(svg_tb), svgToDataURL(svg_to)
+];
+
+
 
 const StateCard = Object.freeze({
   DISABLE: 0,
@@ -68,7 +120,6 @@ var game = {
         }
     },
 
-  
     start: function(){
         this.items.forEach((_, indx) => {
             if (this.states[indx] === StateCard.DONE){
@@ -118,7 +169,7 @@ var game = {
         }
     },
 
-   save: function(){
+    save: function(){
         this.lastCards.forEach(i => this.goBack(i));
         this.lastCards = [];
 
@@ -138,14 +189,12 @@ var game = {
         alert("Partida guardada correctament!");
         window.location.assign("../");
     }
-
-        window.location.assign("../");
-    }
 };
 
 function shuffe(arr){
     arr.sort(() => Math.random() - 0.5);
 }
+
 
 export var gameItems;
 export function selectCards(){
