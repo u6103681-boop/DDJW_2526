@@ -10,8 +10,7 @@ let key       = null;
 const c_w = 96;
 const c_h = 128;
 const gap = 10;
-let idxSel = -1;   // -1 = sense selecció per teclat
-
+let idxSel = -1;
 if (ctx){
     gameEl.attr("width",  800);
     gameEl.attr("height", 600);
@@ -19,12 +18,8 @@ if (ctx){
     update();
 }
 
-/**
- * Calcula el layout en graella òptim per a numCards cartes.
- * Retorna { cols, rows }.
- */
 function getGridLayout(numCards){
-    let cols = Math.ceil(Math.sqrt(numCards * 1.3));   // Lleugerament més ample que alt
+    let cols = Math.ceil(Math.sqrt(numCards * 1.3));
     cols = Math.min(cols, Math.floor(800 / (c_w + gap)));
     cols = Math.max(cols, 1);
     return { cols, rows: Math.ceil(numCards / cols) };
@@ -36,7 +31,6 @@ function start(){
     loadCardResource("../resources/back.png");
 
     let {cols, rows} = getGridLayout(cards.length);
-    // Centrar la graella dins del canvas
     let startX = Math.floor((800 - cols * (c_w + gap) + gap) / 2);
     let startY = Math.floor((600 - rows * (c_h + gap) + gap) / 2);
 
@@ -90,7 +84,6 @@ function draw(){
         if (!res || !res.ready) return;
         let {xMin, yMin} = card.position;
 
-        // Ressaltar carta activa per teclat (marc daurat)
         if (idxSel === indx){
             ctx.save();
             ctx.strokeStyle = '#FFD700';
@@ -102,13 +95,11 @@ function draw(){
     });
 }
 
-/** Mou la selecció de teclat linealment (esquerra/dreta) */
 function moveSelection(delta){
     if (idxSel < 0) { idxSel = 0; return; }
     idxSel = ((idxSel + delta) % cards.length + cards.length) % cards.length;
 }
 
-/** Mou la selecció de teclat per files de la graella (amunt/avall) */
 function moveSelectionGrid(delta){
     let {cols} = getGridLayout(cards.length);
     if (idxSel < 0) { idxSel = 0; return; }
