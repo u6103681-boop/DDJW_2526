@@ -116,6 +116,12 @@ var game = {
                       this.penalty = 25;
                       this.initialScore = 200;
                   }
+                  let currentLevel = parseInt(sessionStorage.getItem('mode2_level')) || 1;
+                  this.pairs = Math.min(1 + currentLevel, resources.length); 
+                  let savedScore = sessionStorage.getItem('mode2_score');
+                  if (savedScore !== null) {
+                      this.initialScore = parseInt(savedScore);
+                  }
               } else {
                   this.initialScore = (this.pairs * 50) + (this.groupSize * 50);
                   this.penalty = 25; 
@@ -128,18 +134,15 @@ var game = {
           }
           this.pairs = Math.min(this.pairs, resources.length);
           this.score = this.initialScore;
-
           this.items = resources.slice();
           shuffe(this.items);
           let uniqueCards = this.items.slice(0, this.pairs);
-
           this.items = [];
           for (let i = 0; i < this.groupSize; i++){
               this.items = this.items.concat(uniqueCards);
           }
           shuffe(this.items);
           this.states = new Array(this.items.length);
-          
           sessionStorage.removeItem('load'); 
       }
   },
