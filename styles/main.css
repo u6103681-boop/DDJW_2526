@@ -28,11 +28,6 @@ body{
 	background-color: #527752;
 }
 
-button{
-	color:azure;
-	border-radius: 15px;
-}
-
 button:hover{
 	background-color: paleturquoise;
 	color:black;
@@ -45,16 +40,27 @@ button:active{
 	color:cornsilk;
 }
 
+h1 {
+	color:lightcyan;
+	text-align: center;
+	font-family: 'Montserrat', sans-serif;
+}
+
 body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center; 
-	column-gap: 10px;
+    gap: 15px; 
+    min-height: 100vh;
+    margin: 0; 
+    background-color: darkslategrey;
 }
 
-h1 {
-	color:lightcyan;
-	text-align: center;
-	font-family: 'Montserrat', sans-serif;
+button {
+    color: azure;
+    border-radius: 15px;
+    padding: 10px 20px;
+    border: 1px solid azure;
+    cursor: pointer;
 }
