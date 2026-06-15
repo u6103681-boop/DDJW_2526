@@ -23,6 +23,6 @@ addEventListener('load', function() {
     });
 
     document.getElementById('exit').addEventListener('click', function(){
-        console.warn("No es pot sortir des del navegador!");
+        console.warn("No es pot sortir!");
     });
 });
