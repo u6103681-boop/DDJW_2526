@@ -16,3 +16,4 @@ gameItems.forEach(function (value, idx)
 });
 startGame();
 $('#save').on('click', ()=>saveGame());
+$('#exit').on('click', ()=>exitGame());
