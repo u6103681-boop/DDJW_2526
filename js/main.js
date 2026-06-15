@@ -55,7 +55,7 @@ function loadRankings() {
     list.innerHTML = '';
     highscores.forEach((entry, index) => {
         let li = document.createElement('li');
-        li.innerHTML = `<strong> - ${index + 1}</strong> --> ${entry.score} pts <em>(Mode ${entry.mode})</em>`;
+        li.innerHTML = `<strong>#${index + 1}</strong> - ${entry.score} pts <em>(Mode ${entry.mode})</em>`;
         list.appendChild(li);
     });
 }
