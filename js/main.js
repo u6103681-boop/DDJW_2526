@@ -2,18 +2,23 @@ addEventListener('load', function() {
     document.getElementById('play').addEventListener('click', () => {
         const mode = prompt("Selecciona el mode de joc:\n1 - Mode 1 (Nivell únic)\n2 - Mode 2 (Dificultat progressiva)");
         if (mode === '1') {
+            sessionStorage.setItem('mode', '1');
             localStorage.removeItem('current_slot');
             localStorage.removeItem('game_to_load');
             window.location.href = 'html/game.html'; 
         } 
         else if (mode === '2') {
-            console.log("Mode 2 seleccionat. Encara no implementat.");
+            sessionStorage.setItem('mode', '2');
+            sessionStorage.setItem('mode2_level', '1');
+            sessionStorage.removeItem('mode2_score');
+            localStorage.removeItem('current_slot');
+            localStorage.removeItem('game_to_load');
+            window.location.href = 'html/game.html';
         } 
         else if (mode !== null) {
             alert("Opció no vàlida, introdueix '1' o '2'.");
         }
     });
-
     document.getElementById('options').addEventListener('click', function(){
         window.location.assign("./html/options.html");
     });
