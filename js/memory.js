@@ -238,7 +238,7 @@ export function saveGame() {
     localStorage.setItem('memory_saves', JSON.stringify(saves));
     alert(`Partida guardada correctament al slot ${currentSlot}`);
 }
-export function exitGame(){     location.assign("../") }
+export function exitGame(){     location.assign("../index.html") }
 export function getScore(){     return game.score;     }
 export function getPairs(){     return game.pairs;     }
 export function getMode(){      return game.mode;      }
