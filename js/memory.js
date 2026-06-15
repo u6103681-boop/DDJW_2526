@@ -128,6 +128,7 @@ var game = {
           shuffe(this.items);
           this.states = new Array(this.items.length);
           sessionStorage.removeItem('load'); 
+       }
       },
    
   start: function(){
