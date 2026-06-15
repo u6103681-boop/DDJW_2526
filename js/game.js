@@ -16,4 +16,6 @@ gameItems.forEach(function (value, idx)
 });
 startGame();
 $('#save').on('click', ()=>saveGame());
-$('#exit').on('click', ()=>exitGame());
+$('#exit').on('click', ()=>exitGame()){
+  location.assign("../");  
+};
