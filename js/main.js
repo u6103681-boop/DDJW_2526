@@ -53,10 +53,6 @@ function loadRankings() {
     let list = document.getElementById('ranking-list');
     if (!list) return;
     list.innerHTML = '';
-    if (highscores.length === 0) {
-        list.innerHTML = '<li>Encara no hi ha partides completades.</li>';
-        return;
-    }
     highscores.forEach((entry, index) => {
         let li = document.createElement('li');
         li.innerHTML = `<strong>#${index + 1}</strong> - ${entry.score} pts <em>(Mode ${entry.mode})</em>`;
