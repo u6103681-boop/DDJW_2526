@@ -83,54 +83,57 @@ var game = {
   select: function(){
       let savedData = localStorage.getItem('game_to_load');
       if (savedData) {
-        let data = JSON.parse(savedData);
-        this.items        = data.gameItems;
-        this.states       = data.states;
-        this.lastCards    = [];
-        this.score        = data.score;
-        this.initialScore = 200;
-        this.pairs        = data.pairs;
-        this.groupSize    = data.groupSize || 2;
-        this.penalty      = 25;
-        this.mode         = data.mode;
-        localStorage.removeItem('game_to_load');
-      }
-     else {
-          if (sessionStorage.mode) {
-              this.mode = parseInt(sessionStorage.mode);
-          } else {
-              this.mode = 1;
+          let data = JSON.parse(savedData);
+          this.items        = data.gameItems || data.items; // Soporta ambos tipos de guardado
+          this.states       = data.states;
+          this.lastCards    = [];
+          this.score        = data.score;
+          this.pairs        = data.pairs;
+          this.groupSize    = data.groupSize || 2;
+          this.mode         = data.mode;
+          // Recuperamos dificultad y penalizaciones reales:
+          this.penalty      = data.penalty || 25; 
+          this.initialScore = data.initialScore || 200;
+
+          // Si estábamos en Mode 2, recuperamos el nivel
+          if (this.mode === 2 && data.mode2_level) {
+              sessionStorage.setItem('mode2_level', data.mode2_level);
           }
+          localStorage.removeItem('game_to_load');
+      } 
+      else {
+          this.mode = sessionStorage.mode ? parseInt(sessionStorage.mode) : 1;
+          let diff = 'normal';
+          this.pairs = 2;
+          this.groupSize = 2;
           if (localStorage.options) {
               let opt = JSON.parse(localStorage.options);
-              this.pairs = parseInt(opt.pairs);
-              this.groupSize = parseInt(opt.groupSize);              
-              if (this.mode === 2) {
-                  if (opt.difficulty === 'easy') {
-                      this.penalty = 10;
-                      this.initialScore = 300;
-                  } else if (opt.difficulty === 'hard') {
-                      this.penalty = 50;
-                      this.initialScore = 100;
-                  } else {
-                      this.penalty = 25;
-                      this.initialScore = 200;
-                  }
-                  let currentLevel = parseInt(sessionStorage.getItem('mode2_level')) || 1;
-                  this.pairs = Math.min(1 + currentLevel, resources.length); 
-                  let savedScore = sessionStorage.getItem('mode2_score');
-                  if (savedScore !== null) {
-                      this.initialScore = parseInt(savedScore);
-                  }
+              this.pairs = parseInt(opt.pairs) || 2;
+              this.groupSize = parseInt(opt.groupSize) || 2;
+              diff = opt.difficulty || 'normal';
+          }
+          if (this.mode === 2) {
+              if (diff === 'easy') {
+                  this.penalty = 10;
+                  this.initialScore = 300;
+              } else if (diff === 'hard') {
+                  this.penalty = 50;
+                  this.initialScore = 100;
               } else {
-                  this.initialScore = (this.pairs * 50) + (this.groupSize * 50);
-                  this.penalty = 25; 
+                  this.penalty = 25;
+                  this.initialScore = 200;
+              }
+              
+              let currentLevel = parseInt(sessionStorage.getItem('mode2_level')) || 1;
+              this.pairs = Math.min(1 + currentLevel, resources.length); 
+              
+              let savedScore = sessionStorage.getItem('mode2_score');
+              if (savedScore !== null) {
+                  this.initialScore = parseInt(savedScore);
               }
           } else {
-              this.pairs = 2;
-              this.groupSize = 2;
-              this.initialScore = 200;
-              this.penalty = 25;
+              this.initialScore = (this.pairs * 50) + (this.groupSize * 50);
+              this.penalty = 25; 
           }
           this.pairs = Math.min(this.pairs, resources.length);
           this.score = this.initialScore;
@@ -143,7 +146,6 @@ var game = {
           }
           shuffe(this.items);
           this.states = new Array(this.items.length);
-          sessionStorage.removeItem('load'); 
       }
   },
    
