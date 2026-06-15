@@ -8,7 +8,7 @@ El joc se separa en dos modes de joc, el mode 1 (la partida normal) i el mode 2 
 
 **Mode 1** - La puntuació màxima que es pot obtenir és la suma de: nombre de cartes úniques  50 + mida de grup  50. Aquesta puntuació, però, baixa en 25 unitats amb cada errada.
 
-**Mode 1** - La puntuació màxima que es pot obtenir prové de la dificultat amb la qual s'ha decidit iniciar la partida, on en la dificultat baixa proporciona 300 punts inicials, però, només se'n descompten 10, en canvi, a                la dificultat normal (la predeterminada), es comença amb una puntuació de 200 punts i se'n resten 25 per cada errada, i, finalment, trobem la dificultat alta, on comences amb 100 punts i cada                                 errada resta 50, fent així molt difícil arribar al final del joc, havent de tenir un factor de sort i estratègia molt alt. 
+**Mode 2** - La puntuació màxima que es pot obtenir prové de la dificultat amb la qual s'ha decidit iniciar la partida, on en la dificultat baixa proporciona 300 punts inicials, però, només se'n descompten 10, en canvi, a                la dificultat normal (la predeterminada), es comença amb una puntuació de 200 punts i se'n resten 25 per cada errada, i, finalment, trobem la dificultat alta, on comences amb 100 punts i cada                                 errada resta 50, fent així molt difícil arribar al final del joc, havent de tenir un factor de sort i estratègia molt alt. 
 
 **Descripció de les parts més rellevants de la implementació**
 
