@@ -1,9 +1,15 @@
 addEventListener('load', function() {
-    document.getElementById('play').addEventListener('click', function(){
-        sessionStorage.groupSize = localStorage.options ? JSON.parse(localStorage.options).groupSize : 2;
-        sessionStorage.numPairs  = localStorage.options ? JSON.parse(localStorage.options).pairs : 2;
-        sessionStorage.removeItem('load');
-        window.location.assign("./html/game.html");
+    document.getElementById('play').addEventListener('click', () => {
+        const mode = prompt("Selecciona el mode de joc:\n1 - Mode 1 (Nivell únic)\n2 - Mode 2 (Dificultat progressiva)");
+        if (mode === '1') {
+            window.location.href = 'html/game.html'; 
+        } 
+        else if (mode === '2') {
+            console.log("Mode 2 seleccionat. Encara no implementat.");
+        } 
+        else if (mode !== null) {
+        alert("Opció no vàlida. Si us plau, introdueix '1' o '2'.");
+        }
     });
 
     document.getElementById('options').addEventListener('click', function(){
