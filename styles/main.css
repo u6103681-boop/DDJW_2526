@@ -40,12 +40,6 @@ button:active{
 	color:cornsilk;
 }
 
-h1 {
-	color:lightcyan;
-	text-align: center;
-	font-family: 'Montserrat', sans-serif;
-}
-
 body {
     display: flex;
     flex-direction: column;
@@ -63,4 +57,27 @@ button {
     padding: 10px 20px;
     border: 1px solid azure;
     cursor: pointer;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    gap: 20px;
+    min-height: 100vh;
+    margin: 0; 
+    background-color: darkslategrey;
+    position: relative;
+}
+
+h1 {
+    color: lightcyan;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    width: 100%;
+    margin: 0;
 }
