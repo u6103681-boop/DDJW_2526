@@ -39,7 +39,6 @@ const svg_back = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128
   <circle cx="48" cy="64" r="20" fill="none" stroke="#ebe8cd" stroke-width="4"/>
 </svg>`;
 
-// Usa esta función (la normal con encodeURIComponent suele dar menos problemas que btoa en algunos navegadores)
 function svgToDataURL(svgStr) {
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
 }
@@ -118,6 +117,16 @@ var game = {
     },
 
     start: function(){
+      let savedData = localStorage.getItem('game_to_load');
+      if (savedData) {
+        let data = JSON.parse(savedData);
+        score = data.score;
+        mode = data.mode;
+        pairs = data.pairs;
+        gameItems = data.gameItems;
+        localStorage.removeItem('game_to_load');
+        return; 
+      }
         this.items.forEach((_, indx) => {
             if (this.states[indx] === StateCard.DONE){
                 this.setValue && this.setValue[indx] && this.setValue[indx](this.items[indx]);
@@ -204,7 +213,31 @@ export function initCard(callback){
     if (!game.setValue) game.setValue = [];
     game.setValue.push(callback);
 }
-export function saveGame(){ game.save(); }
+
+export function saveGame() {
+    let saves = JSON.parse(localStorage.getItem('memory_saves')) || [null, null, null, null, null];
+    let currentSlot = localStorage.getItem('current_slot');
+    if (!currentSlot) {
+        let slotInput = prompt("A quin slot vols guardar la partida? (Tria de l'1 al 5)");
+        let slotNum = parseInt(slotInput);
+        if (isNaN(slotNum) || slotNum < 1 || slotNum > 5) {
+            alert("Slot no vàlid, guardat cancel·lat.");
+            return;
+        }
+        currentSlot = slotNum;
+        localStorage.setItem('current_slot', currentSlot);
+    }
+    let dataToSave = {
+        mode: getMode(),
+        score: getScore(),
+        pairs: getPairs(),
+        gameItems: gameItems, 
+        date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
+    };
+    saves[currentSlot - 1] = dataToSave;
+    localStorage.setItem('memory_saves', JSON.stringify(saves));
+    alert(`Partida guardada correctament al slot ${currentSlot}`);
+}
 
 export function getScore(){     return game.score;     }
 export function getPairs(){     return game.pairs;     }
