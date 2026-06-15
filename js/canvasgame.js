@@ -1,5 +1,5 @@
 import {
-    clickCard, gameItems, selectCards, startGame, initCard, saveGame,
+    clickCard, gameItems, selectCards, startGame, initCard, saveGame, exitGame,
     getScore, getPairs, getMode, getGroupSize, back as BACK_SRC
 } from "./memory.js";
 
