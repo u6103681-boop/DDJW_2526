@@ -84,18 +84,15 @@ var game = {
       let savedData = localStorage.getItem('game_to_load');
       if (savedData) {
           let data = JSON.parse(savedData);
-          this.items        = data.gameItems || data.items; // Soporta ambos tipos de guardado
+          this.items        = data.gameItems || data.items;
           this.states       = data.states;
           this.lastCards    = [];
           this.score        = data.score;
           this.pairs        = data.pairs;
           this.groupSize    = data.groupSize || 2;
           this.mode         = data.mode;
-          // Recuperamos dificultad y penalizaciones reales:
           this.penalty      = data.penalty || 25; 
           this.initialScore = data.initialScore || 200;
-
-          // Si estábamos en Mode 2, recuperamos el nivel
           if (this.mode === 2 && data.mode2_level) {
               sessionStorage.setItem('mode2_level', data.mode2_level);
           }
@@ -190,10 +187,7 @@ var game = {
           if (allMatch){
                 this.pairs--;
                 this.lastCards.forEach(i => this.states[i] = StateCard.DONE);
-                
-                // --- AL COMPLETAR TODAS LAS CARTAS ---
-                if (this.pairs <= 0){
-                    
+                if (this.pairs <= 0){  
                   if (this.mode === 2) {
                       let currentLevel = parseInt(sessionStorage.getItem('mode2_level')) || 1;
                       if (currentLevel < 5) {
