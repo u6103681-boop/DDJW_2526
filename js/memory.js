@@ -95,12 +95,27 @@ var game = {
         this.mode         = data.mode;
         localStorage.removeItem('game_to_load');
       }
-      else {
-          if (sessionStorage.groupSize)    this.groupSize    = parseInt(sessionStorage.groupSize);
-          if (sessionStorage.numPairs)     this.pairs        = parseInt(sessionStorage.numPairs);
-          if (sessionStorage.penalty)      this.penalty      = parseInt(sessionStorage.penalty);
-          if (sessionStorage.initialScore) this.initialScore = parseInt(sessionStorage.initialScore);
-          if (sessionStorage.mode)         this.mode         = parseInt(sessionStorage.mode);
+     else {
+          if (localStorage.options) {
+              let opt = JSON.parse(localStorage.options);
+              this.pairs = parseInt(opt.pairs);
+              this.groupSize = parseInt(opt.groupSize);              
+              if (opt.difficulty === 'easy') {
+                  this.penalty = 10;
+                  this.initialScore = 300;
+              } else if (opt.difficulty === 'hard') {
+                  this.penalty = 50;
+                  this.initialScore = 100;
+              } else { 
+                  this.penalty = 25;
+                  this.initialScore = 200;
+              }
+          }
+          if (sessionStorage.mode) {
+              this.mode = parseInt(sessionStorage.mode);
+          } else {
+              this.mode = 1;
+          }
           this.pairs = Math.min(this.pairs, resources.length);
           this.score = this.initialScore;
           this.items = resources.slice();
@@ -113,8 +128,7 @@ var game = {
           shuffe(this.items);
           this.states = new Array(this.items.length);
           sessionStorage.removeItem('load'); 
-      }
-  },
+      },
    
   start: function(){
     let savedData = localStorage.getItem('game_to_load');
