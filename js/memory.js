@@ -96,40 +96,53 @@ var game = {
         localStorage.removeItem('game_to_load');
       }
      else {
-          if (localStorage.options) {
-              let opt = JSON.parse(localStorage.options);
-              this.pairs = parseInt(opt.pairs);
-              this.groupSize = parseInt(opt.groupSize);              
-              if (opt.difficulty === 'easy') {
-                  this.penalty = 10;
-                  this.initialScore = 300;
-              } else if (opt.difficulty === 'hard') {
-                  this.penalty = 50;
-                  this.initialScore = 100;
-              } else { 
-                  this.penalty = 25;
-                  this.initialScore = 200;
-              }
-          }
           if (sessionStorage.mode) {
               this.mode = parseInt(sessionStorage.mode);
           } else {
               this.mode = 1;
           }
+          if (localStorage.options) {
+              let opt = JSON.parse(localStorage.options);
+              this.pairs = parseInt(opt.pairs);
+              this.groupSize = parseInt(opt.groupSize);              
+              if (this.mode === 2) {
+                  if (opt.difficulty === 'easy') {
+                      this.penalty = 10;
+                      this.initialScore = 300;
+                  } else if (opt.difficulty === 'hard') {
+                      this.penalty = 50;
+                      this.initialScore = 100;
+                  } else {
+                      this.penalty = 25;
+                      this.initialScore = 200;
+                  }
+              } else {
+                  this.initialScore = (this.pairs * 50) + (this.groupSize * 50);
+                  this.penalty = 25; 
+              }
+          } else {
+              this.pairs = 2;
+              this.groupSize = 2;
+              this.initialScore = 200;
+              this.penalty = 25;
+          }
           this.pairs = Math.min(this.pairs, resources.length);
           this.score = this.initialScore;
+
           this.items = resources.slice();
           shuffe(this.items);
           let uniqueCards = this.items.slice(0, this.pairs);
+
           this.items = [];
           for (let i = 0; i < this.groupSize; i++){
               this.items = this.items.concat(uniqueCards);
           }
           shuffe(this.items);
           this.states = new Array(this.items.length);
+          
           sessionStorage.removeItem('load'); 
-       }
-      },
+      }
+  },
    
   start: function(){
     let savedData = localStorage.getItem('game_to_load');
