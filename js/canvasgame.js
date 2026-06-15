@@ -9,7 +9,6 @@ const HUD_H    = 50;
 const c_w      = 90;
 const c_h      = 120;
 const gap      = 10;
-
 let canvas, ctx;
 let cardsMap = [];
 
@@ -20,42 +19,38 @@ function start() {
         return;
     }
     ctx = canvas.getContext('2d');
-
     selectCards();
-
     let saveBtn = document.getElementById('save');
     if (saveBtn) {
         saveBtn.addEventListener('click', () => {
             saveGame();
         });
     }
-
+    let exitBtn = document.getElementById('exit');
+    if (exitBtn) {
+        exitBtn.addEventListener('click', () => {
+            exitGame();
+        });
+    }
     let totalCards = gameItems.length;
     let cols = Math.ceil(Math.sqrt(totalCards));
     let rows = Math.ceil(totalCards / cols);
-
     let gridW = cols * c_w + (cols - 1) * gap;
     let gridH = rows * c_h + (rows - 1) * gap;
-
     let marginX = (CANVAS_W - gridW) / 2;
     let marginY = HUD_H + (CANVAS_H - HUD_H - gridH) / 2;
-
     for (let i = 0; i < totalCards; i++) {
         let c = i % cols;
         let r = Math.floor(i / cols);
         let x = marginX + c * (c_w + gap);
         let y = marginY + r * (c_h + gap);
-
         let imgObj = new Image();
-        
         let cardObj = { x: x, y: y, img: imgObj };
         cardsMap.push(cardObj);
-
         initCard((src) => {
             cardObj.img.src = src;
         });
     }
-
     canvas.addEventListener('click', (e) => {
         let rect = canvas.getBoundingClientRect();
         let mouseX = e.clientX - rect.left;
