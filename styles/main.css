@@ -46,13 +46,14 @@ body {
     margin: 0; 
     background-color: darkslategrey;
     position: relative;
+	color: azure;
 }
 
 h1 {
     color: lightcyan;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
-    margin: 0; 
+    margin-top: 10px; 
     position: absolute;
     top: 30px;
     left: 0;
