@@ -66,7 +66,7 @@ body {
     background-color: darkslategrey;
 }
 
-.h1 {
+h1 {
     color: lightcyan;
     font-family: 'Montserrat', sans-serif;
     margin: 0; 
