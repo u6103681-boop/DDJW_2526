@@ -23,7 +23,7 @@ addEventListener('load', function() {
         let menuText = "Selecciona una partida per carregar (1-5):\n";
         for (let i = 0; i < 5; i++) {
             if (saves[i]) {
-                menuText += `${i + 1} - Mode: ${saves[i].mode} | Punts: ${saves[i].score} (${saves[i].date})\n`;
+                menuText += `${i + 1} - Mode: ${saves[i].mode} | Punts: ${saves[i].score})\n`;
             } else {
                 menuText += `${i + 1} - [Buit]\n`;
             }
@@ -47,3 +47,21 @@ addEventListener('load', function() {
         console.warn("No es pot sortir!");
     });
 });
+
+function loadRankings() {
+    let highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+    let list = document.getElementById('ranking-list');
+    if (!list) return;
+    list.innerHTML = '';
+    if (highscores.length === 0) {
+        list.innerHTML = '<li>Encara no hi ha partides completades.</li>';
+        return;
+    }
+    highscores.forEach((entry, index) => {
+        let li = document.createElement('li');
+        li.innerHTML = `<strong>#${index + 1}</strong> - ${entry.score} pts <em>(Mode ${entry.mode})</em>`;
+        list.appendChild(li);
+    });
+}
+
+window.addEventListener('load', loadRankings);
