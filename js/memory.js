@@ -185,10 +185,27 @@ var game = {
             let firstItem = this.items[this.lastCards[0]];
             let allMatch  = this.lastCards.every(i => this.items[i] === firstItem);
 
-           if (allMatch){
+          if (allMatch){
                 this.pairs--;
                 this.lastCards.forEach(i => this.states[i] = StateCard.DONE);
+                
+                // --- AL COMPLETAR TODAS LAS CARTAS ---
                 if (this.pairs <= 0){
+                    
+                  if (this.mode === 2) {
+                      let currentLevel = parseInt(sessionStorage.getItem('mode2_level')) || 1;
+                      if (currentLevel < 5) {
+                        alert(`Nivell ${currentLevel} completat! Puntuació actual: ${this.score}`);
+                        sessionStorage.setItem('mode2_level', currentLevel + 1);
+                        sessionStorage.setItem('mode2_score', this.score);
+                        window.location.reload(); 
+                        return;
+                    } else {
+                        alert(`Felicitats! Has completat tots els nivells del Mode 2 amb ${this.score} punts!`);
+                        }
+                    } else {
+                        alert(`Has guanyat amb ${this.score} punts!!!!`);
+                    }
                     let highscores = JSON.parse(localStorage.getItem('highscores')) || [];
                     highscores.push({
                         score: this.score,
@@ -198,10 +215,9 @@ var game = {
                     highscores.sort((a, b) => b.score - a.score);
                     highscores = highscores.slice(0, 5);
                     localStorage.setItem('highscores', JSON.stringify(highscores));
-                    alert(`Has guanyat amb ${this.score} punts!!!!`);
                     window.location.assign("../");
                 }
-            } else {
+              } else {
                 this.score -= this.penalty;
                 this.waiting = true;
                 let toFlip = [...this.lastCards];
