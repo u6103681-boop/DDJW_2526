@@ -80,62 +80,66 @@ var game = {
         this.states[idx] = StateCard.DISABLE;
     },
 
-    select: function(){
-        if (sessionStorage.load){
-            let toLoad        = JSON.parse(sessionStorage.load);
-            this.items        = toLoad.items;
-            this.states       = toLoad.states;
-            this.lastCards    = toLoad.lastCards    || [];
-            this.score        = toLoad.score;
-            this.initialScore = toLoad.initialScore || 200;
-            this.pairs        = toLoad.pairs;
-            this.groupSize    = toLoad.groupSize    || 2;
-            this.penalty      = toLoad.penalty      || 25;
-            this.mode         = toLoad.mode         || 1;
-        }
-        else{
-            if (sessionStorage.groupSize)    this.groupSize    = parseInt(sessionStorage.groupSize);
-            if (sessionStorage.numPairs)     this.pairs        = parseInt(sessionStorage.numPairs);
-            if (sessionStorage.penalty)      this.penalty      = parseInt(sessionStorage.penalty);
-            if (sessionStorage.initialScore) this.initialScore = parseInt(sessionStorage.initialScore);
-            if (sessionStorage.mode)         this.mode         = parseInt(sessionStorage.mode);
-
-            this.pairs = Math.min(this.pairs, resources.length);
-            this.score = this.initialScore;
-
-            this.items = resources.slice();
-            shuffe(this.items);
-            let uniqueCards = this.items.slice(0, this.pairs);
-
-            this.items = [];
-            for (let i = 0; i < this.groupSize; i++){
-                this.items = this.items.concat(uniqueCards);
-            }
-            shuffe(this.items);
-            this.states = new Array(this.items.length);
-        }
-    },
-
-    start: function(){
+  select: function(){
       let savedData = localStorage.getItem('game_to_load');
       if (savedData) {
         let data = JSON.parse(savedData);
-        score = data.score;
-        mode = data.mode;
-        pairs = data.pairs;
-        gameItems = data.gameItems;
+        this.items        = data.gameItems;
+        this.states       = data.states;
+        this.lastCards    = [];
+        this.score        = data.score;
+        this.initialScore = 200;
+        this.pairs        = data.pairs;
+        this.groupSize    = data.groupSize || 2;
+        this.penalty      = 25;
+        this.mode         = data.mode;
         localStorage.removeItem('game_to_load');
-        return; 
       }
-        this.items.forEach((_, indx) => {
-            if (this.states[indx] === StateCard.DONE){
-                this.setValue && this.setValue[indx] && this.setValue[indx](this.items[indx]);
-                this.ready++;
-            } else {
-                this.goBack(indx);
-                this.ready++;
-            }
-        });
+      else if (sessionStorage.load){
+        let toLoad        = JSON.parse(sessionStorage.load);
+        this.items        = toLoad.items;
+        this.states       = toLoad.states;
+        this.lastCards    = toLoad.lastCards    || [];
+        this.score        = toLoad.score;
+        this.initialScore = toLoad.initialScore || 200;
+        this.pairs        = toLoad.pairs;
+        this.groupSize    = toLoad.groupSize    || 2;
+        this.penalty      = toLoad.penalty      || 25;
+        this.mode         = toLoad.mode         || 1;
+      }
+      else{
+        if (sessionStorage.groupSize)    this.groupSize    = parseInt(sessionStorage.groupSize);
+        if (sessionStorage.numPairs)     this.pairs        = parseInt(sessionStorage.numPairs);
+        if (sessionStorage.penalty)      this.penalty      = parseInt(sessionStorage.penalty);
+        if (sessionStorage.initialScore) this.initialScore = parseInt(sessionStorage.initialScore);
+        if (sessionStorage.mode)         this.mode         = parseInt(sessionStorage.mode);
+
+        this.pairs = Math.min(this.pairs, resources.length);
+        this.score = this.initialScore;
+
+        this.items = resources.slice();
+        shuffe(this.items);
+        let uniqueCards = this.items.slice(0, this.pairs);
+
+        this.items = [];
+        for (let i = 0; i < this.groupSize; i++){
+            this.items = this.items.concat(uniqueCards);
+        }
+        shuffe(this.items);
+        this.states = new Array(this.items.length);
+      }
+  },
+   
+  start: function(){
+      this.items.forEach((_, indx) => {
+        if (this.states[indx] === StateCard.DONE){
+            this.setValue && this.setValue[indx] && this.setValue[indx](this.items[indx]);
+            this.ready++;
+        } else {
+            this.goBack(indx);
+            this.ready++;
+        }
+      });
     },
 
     click: function(indx){
@@ -231,7 +235,9 @@ export function saveGame() {
         mode: getMode(),
         score: getScore(),
         pairs: getPairs(),
+        groupSize: getGroupSize(),
         gameItems: gameItems, 
+        states: game.states,
         date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
     };
     saves[currentSlot - 1] = dataToSave;
