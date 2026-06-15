@@ -95,38 +95,24 @@ var game = {
         this.mode         = data.mode;
         localStorage.removeItem('game_to_load');
       }
-      else if (sessionStorage.load){
-        let toLoad        = JSON.parse(sessionStorage.load);
-        this.items        = toLoad.items;
-        this.states       = toLoad.states;
-        this.lastCards    = toLoad.lastCards    || [];
-        this.score        = toLoad.score;
-        this.initialScore = toLoad.initialScore || 200;
-        this.pairs        = toLoad.pairs;
-        this.groupSize    = toLoad.groupSize    || 2;
-        this.penalty      = toLoad.penalty      || 25;
-        this.mode         = toLoad.mode         || 1;
-      }
-      else{
-        if (sessionStorage.groupSize)    this.groupSize    = parseInt(sessionStorage.groupSize);
-        if (sessionStorage.numPairs)     this.pairs        = parseInt(sessionStorage.numPairs);
-        if (sessionStorage.penalty)      this.penalty      = parseInt(sessionStorage.penalty);
-        if (sessionStorage.initialScore) this.initialScore = parseInt(sessionStorage.initialScore);
-        if (sessionStorage.mode)         this.mode         = parseInt(sessionStorage.mode);
-
-        this.pairs = Math.min(this.pairs, resources.length);
-        this.score = this.initialScore;
-
-        this.items = resources.slice();
-        shuffe(this.items);
-        let uniqueCards = this.items.slice(0, this.pairs);
-
-        this.items = [];
-        for (let i = 0; i < this.groupSize; i++){
-            this.items = this.items.concat(uniqueCards);
-        }
-        shuffe(this.items);
-        this.states = new Array(this.items.length);
+      else {
+          if (sessionStorage.groupSize)    this.groupSize    = parseInt(sessionStorage.groupSize);
+          if (sessionStorage.numPairs)     this.pairs        = parseInt(sessionStorage.numPairs);
+          if (sessionStorage.penalty)      this.penalty      = parseInt(sessionStorage.penalty);
+          if (sessionStorage.initialScore) this.initialScore = parseInt(sessionStorage.initialScore);
+          if (sessionStorage.mode)         this.mode         = parseInt(sessionStorage.mode);
+          this.pairs = Math.min(this.pairs, resources.length);
+          this.score = this.initialScore;
+          this.items = resources.slice();
+          shuffe(this.items);
+          let uniqueCards = this.items.slice(0, this.pairs);
+          this.items = [];
+          for (let i = 0; i < this.groupSize; i++){
+              this.items = this.items.concat(uniqueCards);
+          }
+          shuffe(this.items);
+          this.states = new Array(this.items.length);
+          sessionStorage.removeItem('load'); 
       }
   },
    
