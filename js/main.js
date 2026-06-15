@@ -8,7 +8,7 @@ addEventListener('load', function() {
             console.log("Mode 2 seleccionat. Encara no implementat.");
         } 
         else if (mode !== null) {
-        alert("Opció no vàlida. Si us plau, introdueix '1' o '2'.");
+        alert("Opció no vàlida, introdueix '1' o '2'.");
         }
     });
 
