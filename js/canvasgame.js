@@ -1,133 +1,109 @@
-import {$} from "../library/jquery-4.0.0.slim.module.min.js";
-import {clickCard, gameItems, selectCards, startGame, initCard, saveGame} from "./memory.js";
+import {
+    clickCard, gameItems, selectCards, startGame, initCard, saveGame, exitGame,
+    getScore, getPairs, getMode, getGroupSize, back as BACK_SRC
+} from "./memory.js";
 
-let gameEl    = $('#game');
-let ctx       = gameEl[0].getContext('2d');
-let resources = {};
-let cards     = [];
-const e_click = {click: false, x: -1, y: -1};
-let key       = null;
-const c_w = 96;
-const c_h = 128;
-const gap = 10;
-let idxSel = -1;
-if (ctx){
-    gameEl.attr("width",  800);
-    gameEl.attr("height", 600);
-    start();
-    update();
-}
+const CANVAS_W = 800;
+const CANVAS_H = 600;
+const HUD_H    = 50;
+const c_w      = 90;
+const c_h      = 120;
+const gap      = 10;
+let canvas, ctx;
+let cardsMap = [];
 
-function getGridLayout(numCards){
-    let cols = Math.ceil(Math.sqrt(numCards * 1.3));
-    cols = Math.min(cols, Math.floor(800 / (c_w + gap)));
-    cols = Math.max(cols, 1);
-    return { cols, rows: Math.ceil(numCards / cols) };
-}
-
-function start(){
-    selectCards();
-    cards = gameItems.map(c => ({texture: c}));
-    loadCardResource("../resources/back.png");
-
-    let {cols, rows} = getGridLayout(cards.length);
-    let startX = Math.floor((800 - cols * (c_w + gap) + gap) / 2);
-    let startY = Math.floor((600 - rows * (c_h + gap) + gap) / 2);
-
-    cards.forEach((card, indx) => {
-        loadCardResource(card.texture);
-        initCard(val => card.texture = val);
-
-        let col = indx % cols;
-        let row = Math.floor(indx / cols);
-        card.position = {
-            xMin: startX + col * (c_w + gap),
-            xMax: startX + col * (c_w + gap) + c_w,
-            yMin: startY + row * (c_h + gap),
-            yMax: startY + row * (c_h + gap) + c_h
-        };
-        card.onClick = function(x, y){
-            return x >= this.position.xMin && x <= this.position.xMax &&
-                   y >= this.position.yMin && y <= this.position.yMax;
-        };
-    });
-
-    gameEl.on('click', function(e){
-        e_click.click = true;
-        e_click.x = e.pageX - this.offsetLeft;
-        e_click.y = e.pageY - this.offsetTop;
-    });
-    $(document).keydown(e => key = e.key);
-    startGame();
-}
-
-function update(){
-    checkInput();
-    draw();
-    requestAnimationFrame(update);
-}
-
-function loadCardResource(src){
-    if (!resources[src]){
-        let res = {image: null, ready: false};
-        res.image = new Image();
-        res.image.src = src;
-        res.image.onload = () => res.ready = true;
-        resources[src] = res;
+function start() {
+    canvas = document.getElementById('game');
+    if (!canvas) {
+        console.error("No se ha encontrado el canvas con id 'game'");
+        return;
     }
-}
-
-function draw(){
-    ctx.reset();
-    cards.forEach((card, indx) => {
-        let res = resources[card.texture];
-        if (!res || !res.ready) return;
-        let {xMin, yMin} = card.position;
-
-        if (idxSel === indx){
-            ctx.save();
-            ctx.strokeStyle = '#FFD700';
-            ctx.lineWidth   = 3;
-            ctx.strokeRect(xMin - 3, yMin - 3, c_w + 6, c_h + 6);
-            ctx.restore();
-        }
-        ctx.drawImage(res.image, xMin, yMin, c_w, c_h);
-    });
-}
-
-function moveSelection(delta){
-    if (idxSel < 0) { idxSel = 0; return; }
-    idxSel = ((idxSel + delta) % cards.length + cards.length) % cards.length;
-}
-
-function moveSelectionGrid(delta){
-    let {cols} = getGridLayout(cards.length);
-    if (idxSel < 0) { idxSel = 0; return; }
-    let next = idxSel + delta * cols;
-    idxSel = Math.max(0, Math.min(next, cards.length - 1));
-}
-
-function checkInput(){
-    if (e_click.click){
-        cards.some((card, indx) => {
-            let hit = card.onClick(e_click.x, e_click.y);
-            if (hit) clickCard(indx);
-            return hit;
+    ctx = canvas.getContext('2d');
+    selectCards();
+    let saveBtn = document.getElementById('save');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            saveGame();
         });
     }
-    if (key){
-        switch(key){
-            case "Escape":      saveGame();            break;
-            case "ArrowRight":  moveSelection(1);      break;
-            case "ArrowLeft":   moveSelection(-1);     break;
-            case "ArrowDown":   moveSelectionGrid(1);  break;
-            case "ArrowUp":     moveSelectionGrid(-1); break;
-            case "Enter":
-                if (idxSel >= 0) clickCard(idxSel);
+    let exitBtn = document.getElementById('exit');
+    if (exitBtn) {
+        exitBtn.addEventListener('click', () => {
+            exitGame();
+        });
+    }
+    let totalCards = gameItems.length;
+    let cols = Math.ceil(Math.sqrt(totalCards));
+    let rows = Math.ceil(totalCards / cols);
+    let gridW = cols * c_w + (cols - 1) * gap;
+    let gridH = rows * c_h + (rows - 1) * gap;
+    let marginX = (CANVAS_W - gridW) / 2;
+    let marginY = HUD_H + (CANVAS_H - HUD_H - gridH) / 2;
+    for (let i = 0; i < totalCards; i++) {
+        let c = i % cols;
+        let r = Math.floor(i / cols);
+        let x = marginX + c * (c_w + gap);
+        let y = marginY + r * (c_h + gap);
+        let imgObj = new Image();
+        let cardObj = { x: x, y: y, img: imgObj };
+        cardsMap.push(cardObj);
+        initCard((src) => {
+            cardObj.img.src = src;
+        });
+    }
+    canvas.addEventListener('click', (e) => {
+        let rect = canvas.getBoundingClientRect();
+        let mouseX = e.clientX - rect.left;
+        let mouseY = e.clientY - rect.top;
+
+        for (let i = 0; i < cardsMap.length; i++) {
+            let card = cardsMap[i];
+            if (mouseX >= card.x && mouseX <= card.x + c_w &&
+                mouseY >= card.y && mouseY <= card.y + c_h) {
+                clickCard(i);
                 break;
-            default:
-                console.warn("Tecla " + key + " no reconeguda.");
+            }
+        }
+    });
+
+    startGame();
+    
+    requestAnimationFrame(drawLoop);
+}
+
+function drawLoop() {
+    ctx.fillStyle = '#263a3a'; 
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fillRect(0, 0, CANVAS_W, HUD_H);
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    
+    let currentMode = getMode() || 1;
+    let currentPairs = getPairs() || 0;
+    ctx.fillText(`Mode ${currentMode} - Grups restants: ${currentPairs}`, 20, HUD_H / 2);
+
+    ctx.fillStyle = '#00b2fe';
+    ctx.textAlign = 'right';
+    let currentScore = getScore() || 0;
+    ctx.fillText(`Puntuació: ${currentScore}`, CANVAS_W - 20, HUD_H / 2);
+
+    for (let i = 0; i < cardsMap.length; i++) {
+        let card = cardsMap[i];
+        
+        if (card.img.complete && card.img.naturalWidth !== 0) {
+            ctx.drawImage(card.img, card.x, card.y, c_w, c_h);
+        } else {
+            ctx.fillStyle = '#37474F';
+            ctx.fillRect(card.x, card.y, c_w, c_h);
         }
     }
-    e_click.click = key = false;
+
+    requestAnimationFrame(drawLoop);
 }
+
+window.addEventListener('load', start);

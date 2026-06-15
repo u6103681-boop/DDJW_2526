@@ -8,23 +8,12 @@ button.center{
 	width: 6rem;
 	height: 3rem;
 	margin-top: 1rem;
-	color: cadetblue;
-
 }
 
 #title{
-	color:lightsalmon;
+	color:lightcyan;
 	text-align: center;
 	font-family: 'Montserrat', sans-serif;
-}
-
-body{
-	background-color: darkslategrey;
-}
-
-button{
-	color:beige;
-	border-radius: 15px;
 }
 
 button:hover{
@@ -43,5 +32,32 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;      
+    align-items: center;
+    gap: 20px;
+    min-height: 100vh;
+    margin: 0; 
+    background-color: darkslategrey;
+    position: relative;
+	color: azure;
+}
+
+h1 {
+    color: lightcyan;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    margin-top: 10px; 
+    position: absolute;
+    top: 30px;
+    left: 0;
+    width: 100%;
+}
+
+button {
+    color: azure;
+    border-radius: 15px;
+    border: 1px solid azure;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: inherit;
+	background-color: #527752;
 }

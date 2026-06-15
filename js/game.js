@@ -1,5 +1,5 @@
 import {$} from "../library/jquery-4.0.0.slim.module.min.js";
-import {clickCard, gameItems, selectCards, startGame, initCard, saveGame} from "./memory.js";
+import {clickCard, gameItems, selectCards, startGame, initCard, saveGame, exitGame} from "./memory.js";
 
 var game = $('#game');
 
@@ -16,3 +16,4 @@ gameItems.forEach(function (value, idx)
 });
 startGame();
 $('#save').on('click', ()=>saveGame());
+$('#exit').on('click', ()=>exitGame());

@@ -1,7 +1,55 @@
-const resources = ['../resources/cb.svg', '../resources/co.svg',
-                   '../resources/sb.svg', '../resources/so.svg',
-                   '../resources/tb.svg', '../resources/to.svg'];
-const back = '../resources/back.svg';
+const svg_co = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <circle cx="48" cy="64" r="28" fill="#e6921d" stroke="#9c6312" stroke-width="2.5"/>
+</svg>`;
+
+const svg_cb = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <circle cx="48" cy="64" r="28" fill="#00b2fe" stroke="#005b82" stroke-width="2.5"/>
+</svg>`;
+
+const svg_to = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <polygon points="48,30 77.44,81 18.56,81" fill="#e6921d" stroke="#9c6312" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>`;
+
+const svg_tb = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <polygon points="48,30 77.44,81 18.56,81" fill="#00b2fe" stroke="#005b82" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>`;
+
+const svg_so = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <rect x="24" y="40" width="48" height="48" fill="#e6921d" stroke="#9c6312" stroke-width="2.5"/>
+</svg>`;
+
+const svg_sb = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#ebe8cd" stroke="#37474F" stroke-width="2"/>
+  <rect x="5" y="5" width="86" height="118" rx="5" fill="none" stroke="#00b2fe" stroke-width="1"/>
+  <rect x="24" y="40" width="48" height="48" fill="#00b2fe" stroke="#005b82" stroke-width="2.5"/>
+</svg>`;
+
+const svg_back = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="128" viewBox="0 0 96 128">
+  <rect width="96" height="128" rx="8" fill="#37474F" stroke="#ebe8cd" stroke-width="2"/>
+  <circle cx="48" cy="64" r="20" fill="none" stroke="#ebe8cd" stroke-width="4"/>
+</svg>`;
+
+function svgToDataURL(svgStr) {
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+}
+
+export const back = svgToDataURL(svg_back);
+
+const resources = [
+    svgToDataURL(svg_cb), svgToDataURL(svg_co),
+    svgToDataURL(svg_sb), svgToDataURL(svg_so),
+    svgToDataURL(svg_tb), svgToDataURL(svg_to)
+];
 
 const StateCard = Object.freeze({
   DISABLE: 0,
@@ -10,73 +58,126 @@ const StateCard = Object.freeze({
 });
 
 var game = {
-    items:     [],
-    states:    [],
-    setValue:  null,
-    ready:     0,
-    lastCards: [],
-    waiting:   false,
-    score:     200,
-    pairs:     2,
-    groupSize: 2,
+    items:        [],
+    states:       [],
+    setValue:     null,
+    ready:        0,
+    lastCards:    [],
+    waiting:      false,
+    score:        200,
+    initialScore: 200,
+    pairs:        2,
+    groupSize:    2,
+    penalty:      25,
+    mode:         1,
 
     goBack: function(idx){
-        this.setValue && this.setValue[idx](back);
+        this.setValue && this.setValue[idx] && this.setValue[idx](back);
         this.states[idx] = StateCard.ENABLE;
     },
     goFront: function(idx){
-        this.setValue && this.setValue[idx](this.items[idx]);
+        this.setValue && this.setValue[idx] && this.setValue[idx](this.items[idx]);
         this.states[idx] = StateCard.DISABLE;
     },
 
-    select: function(){
-        if (sessionStorage.load){
-            let toLoad = JSON.parse(sessionStorage.load);
-            this.items     = toLoad.items;
-            this.states    = toLoad.states;
-            this.lastCards = toLoad.lastCards || [];
-            this.score     = toLoad.score;
-            this.pairs     = toLoad.pairs;
-            this.groupSize = toLoad.groupSize || 2;
+  select: function(){
+      let savedData = localStorage.getItem('game_to_load');
+      if (savedData) {
+        let data = JSON.parse(savedData);
+        this.items        = data.gameItems;
+        this.states       = data.states;
+        this.lastCards    = [];
+        this.score        = data.score;
+        this.initialScore = 200;
+        this.pairs        = data.pairs;
+        this.groupSize    = data.groupSize || 2;
+        this.penalty      = 25;
+        this.mode         = data.mode;
+        localStorage.removeItem('game_to_load');
+      }
+     else {
+          if (sessionStorage.mode) {
+              this.mode = parseInt(sessionStorage.mode);
+          } else {
+              this.mode = 1;
+          }
+          if (localStorage.options) {
+              let opt = JSON.parse(localStorage.options);
+              this.pairs = parseInt(opt.pairs);
+              this.groupSize = parseInt(opt.groupSize);              
+              if (this.mode === 2) {
+                  if (opt.difficulty === 'easy') {
+                      this.penalty = 10;
+                      this.initialScore = 300;
+                  } else if (opt.difficulty === 'hard') {
+                      this.penalty = 50;
+                      this.initialScore = 100;
+                  } else {
+                      this.penalty = 25;
+                      this.initialScore = 200;
+                  }
+                  let currentLevel = parseInt(sessionStorage.getItem('mode2_level')) || 1;
+                  this.pairs = Math.min(1 + currentLevel, resources.length); 
+                  let savedScore = sessionStorage.getItem('mode2_score');
+                  if (savedScore !== null) {
+                      this.initialScore = parseInt(savedScore);
+                  }
+              } else {
+                  this.initialScore = (this.pairs * 50) + (this.groupSize * 50);
+                  this.penalty = 25; 
+              }
+          } else {
+              this.pairs = 2;
+              this.groupSize = 2;
+              this.initialScore = 200;
+              this.penalty = 25;
+          }
+          this.pairs = Math.min(this.pairs, resources.length);
+          this.score = this.initialScore;
+          this.items = resources.slice();
+          shuffe(this.items);
+          let uniqueCards = this.items.slice(0, this.pairs);
+          this.items = [];
+          for (let i = 0; i < this.groupSize; i++){
+              this.items = this.items.concat(uniqueCards);
+          }
+          shuffe(this.items);
+          this.states = new Array(this.items.length);
+          sessionStorage.removeItem('load'); 
+      }
+  },
+   
+  start: function(){
+    let savedData = localStorage.getItem('game_to_load');
+    if (savedData) {
+        let data = JSON.parse(savedData);
+        
+        this.score = data.score;
+        this.mode = data.mode;
+        this.pairs = data.pairs;
+        gameItems = data.gameItems; 
+        
+        localStorage.removeItem('game_to_load');
+        return; 
+    }
+    
+    this.items.forEach((_, indx) => {
+        if (this.states[indx] === StateCard.DONE){
+            this.setValue && this.setValue[indx] && this.setValue[indx](this.items[indx]);
+            this.ready++;
+        } else {
+            this.goBack(indx);
+            this.ready++;
         }
-        else{
-            if (sessionStorage.groupSize) this.groupSize = parseInt(sessionStorage.groupSize);
-            if (sessionStorage.numPairs)  this.pairs     = parseInt(sessionStorage.numPairs);
+    });
+  },
 
-            this.pairs = Math.min(this.pairs, resources.length);
-
-            this.items = resources.slice();
-            shuffe(this.items);
-            let uniqueCards = this.items.slice(0, this.pairs);
-
-            this.items = [];
-            for (let i = 0; i < this.groupSize; i++){
-                this.items = this.items.concat(uniqueCards);
-            }
-            shuffe(this.items);
-            this.states = new Array(this.items.length);
-        }
-    },
-
-    start: function(){
-        this.items.forEach((_, indx) => {
-            if (this.states[indx] === StateCard.DISABLE ||
-                this.states[indx] === StateCard.DONE){
-                this.ready++;
-            } else {
-                setTimeout(() => {
-                    this.ready++;
-                    this.goBack(indx);
-                }, 1000 + 100 * indx);
-            }
-        });
-    },
-
-    click: function(indx){
+  click: function(indx){
         if (this.states[indx] !== StateCard.ENABLE) return;
         if (this.ready < this.items.length)          return;
         if (this.waiting)                            return;
-        if (this.lastCards.includes(indx))           return; 
+        if (this.lastCards.includes(indx))           return;
+
         this.goFront(indx);
         this.lastCards.push(indx);
 
@@ -84,15 +185,40 @@ var game = {
             let firstItem = this.items[this.lastCards[0]];
             let allMatch  = this.lastCards.every(i => this.items[i] === firstItem);
 
-            if (allMatch){
+          if (allMatch){
                 this.pairs--;
                 this.lastCards.forEach(i => this.states[i] = StateCard.DONE);
+                
+                // --- AL COMPLETAR TODAS LAS CARTAS ---
                 if (this.pairs <= 0){
-                    alert(`Has guanyat amb ${this.score} punts!!!!`);
+                    
+                  if (this.mode === 2) {
+                      let currentLevel = parseInt(sessionStorage.getItem('mode2_level')) || 1;
+                      if (currentLevel < 5) {
+                        alert(`Nivell ${currentLevel} completat! Puntuació actual: ${this.score}`);
+                        sessionStorage.setItem('mode2_level', currentLevel + 1);
+                        sessionStorage.setItem('mode2_score', this.score);
+                        window.location.reload(); 
+                        return;
+                    } else {
+                        alert(`Felicitats! Has completat tots els nivells del Mode 2 amb ${this.score} punts!`);
+                        }
+                    } else {
+                        alert(`Has guanyat amb ${this.score} punts!!!!`);
+                    }
+                    let highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+                    highscores.push({
+                        score: this.score,
+                        mode: this.mode,
+                        date: new Date().toLocaleDateString()
+                    });
+                    highscores.sort((a, b) => b.score - a.score);
+                    highscores = highscores.slice(0, 5);
+                    localStorage.setItem('highscores', JSON.stringify(highscores));
                     window.location.assign("../");
                 }
-            } else {
-                this.score -= 25;
+              } else {
+                this.score -= this.penalty;
                 this.waiting = true;
                 let toFlip = [...this.lastCards];
                 setTimeout(() => {
@@ -113,22 +239,19 @@ var game = {
         this.lastCards = [];
 
         let to_save = JSON.stringify({
-            items:     this.items,
-            states:    this.states,
-            lastCards: this.lastCards,
-            score:     this.score,
-            pairs:     this.pairs,
-            groupSize: this.groupSize
+            items:        this.items,
+            states:       this.states,
+            lastCards:    this.lastCards,
+            score:        this.score,
+            initialScore: this.initialScore,
+            pairs:        this.pairs,
+            groupSize:    this.groupSize,
+            penalty:      this.penalty,
+            mode:         this.mode
         });
 
         localStorage.save = to_save;
-
-        fetch('../php/save.php', {
-            method:  "POST",
-            body:    to_save,
-            headers: {"Content-type": "application/json; charset=UTF-8"}
-        }).catch(err => console.error("Error guardant al servidor:", err));
-
+        alert("Partida guardada correctament!");
         window.location.assign("../");
     }
 };
@@ -136,6 +259,7 @@ var game = {
 function shuffe(arr){
     arr.sort(() => Math.random() - 0.5);
 }
+
 
 export var gameItems;
 export function selectCards(){
@@ -148,4 +272,35 @@ export function initCard(callback){
     if (!game.setValue) game.setValue = [];
     game.setValue.push(callback);
 }
-export function saveGame(){ game.save(); }
+
+export function saveGame() {
+    let saves = JSON.parse(localStorage.getItem('memory_saves')) || [null, null, null, null, null];
+    let currentSlot = localStorage.getItem('current_slot');
+    if (!currentSlot) {
+        let slotInput = prompt("A quin slot vols guardar la partida? (Tria de l'1 al 5)");
+        let slotNum = parseInt(slotInput);
+        if (isNaN(slotNum) || slotNum < 1 || slotNum > 5) {
+            alert("Slot no vàlid, guardat cancel·lat.");
+            return;
+        }
+        currentSlot = slotNum;
+        localStorage.setItem('current_slot', currentSlot);
+    }
+    let dataToSave = {
+        mode: getMode(),
+        score: getScore(),
+        pairs: getPairs(),
+        groupSize: getGroupSize(),
+        gameItems: gameItems, 
+        states: game.states,
+        date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
+    };
+    saves[currentSlot - 1] = dataToSave;
+    localStorage.setItem('memory_saves', JSON.stringify(saves));
+    alert(`Partida guardada correctament al slot ${currentSlot}`);
+}
+export function exitGame(){     location.assign("../index.html") }
+export function getScore(){     return game.score;     }
+export function getPairs(){     return game.pairs;     }
+export function getMode(){      return game.mode;      }
+export function getGroupSize(){ return game.groupSize; }
