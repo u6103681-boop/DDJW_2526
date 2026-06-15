@@ -131,7 +131,20 @@ var game = {
   },
    
   start: function(){
-      this.items.forEach((_, indx) => {
+    let savedData = localStorage.getItem('game_to_load');
+    if (savedData) {
+        let data = JSON.parse(savedData);
+        
+        this.score = data.score;
+        this.mode = data.mode;
+        this.pairs = data.pairs;
+        gameItems = data.gameItems; 
+        
+        localStorage.removeItem('game_to_load');
+        return; 
+    }
+    
+    this.items.forEach((_, indx) => {
         if (this.states[indx] === StateCard.DONE){
             this.setValue && this.setValue[indx] && this.setValue[indx](this.items[indx]);
             this.ready++;
@@ -139,10 +152,10 @@ var game = {
             this.goBack(indx);
             this.ready++;
         }
-      });
-    },
+    });
+  },
 
-    click: function(indx){
+  click: function(indx){
         if (this.states[indx] !== StateCard.ENABLE) return;
         if (this.ready < this.items.length)          return;
         if (this.waiting)                            return;
