@@ -182,10 +182,19 @@ var game = {
             let firstItem = this.items[this.lastCards[0]];
             let allMatch  = this.lastCards.every(i => this.items[i] === firstItem);
 
-            if (allMatch){
+           if (allMatch){
                 this.pairs--;
                 this.lastCards.forEach(i => this.states[i] = StateCard.DONE);
                 if (this.pairs <= 0){
+                    let highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+                    highscores.push({
+                        score: this.score,
+                        mode: this.mode,
+                        date: new Date().toLocaleDateString()
+                    });
+                    highscores.sort((a, b) => b.score - a.score);
+                    highscores = highscores.slice(0, 5);
+                    localStorage.setItem('highscores', JSON.stringify(highscores));
                     alert(`Has guanyat amb ${this.score} punts!!!!`);
                     window.location.assign("../");
                 }
