@@ -40,36 +40,30 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; 
-    gap: 15px; 
+    align-items: center;
+    gap: 20px;
     min-height: 100vh;
     margin: 0; 
     background-color: darkslategrey;
+    position: relative;
+}
+
+h1 {
+    color: lightcyan;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    margin: 0; 
+    position: absolute;
+    top: 30px;
+    left: 0;
+    width: 100%;
 }
 
 button {
     color: cadetblue;
     border-radius: 15px;
     border: 1px solid azure;
+    padding: 10px 20px;
     cursor: pointer;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: space-evenly;
-    padding-left: 10%;
-    gap: 15px;
-    min-height: 100vh;
-    margin: 0; 
-    background-color: darkslategrey;
-}
-
-h1 {
-    color: lightcyan;
-    font-family: 'Montserrat', sans-serif;
-    margin: 0; 
-    margin-bottom: 10px;
-	align-self: flex-start;
+    font-family: inherit;
 }
